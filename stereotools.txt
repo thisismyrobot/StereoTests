@@ -97,6 +97,13 @@ And compare
      (212, [((220, (173, 393)), (220, (188, 408)))]),
      (237, [((90, (173, 263)), (90, (188, 278)))])]
 
+And show
+
+    >>> for row, lines in common.items():
+    ...     for (_, (_, _)), (_, (start, end)) in lines:
+    ...         stereotools.add_line(img_norm_gs, row, start, row, end)
+    >>> cv.ShowImage("right - lines", img_norm_gs);
+
 Wait for key
 
     >>> _ = cv.WaitKey()

@@ -23,8 +23,13 @@ def add_dot(img, row, col, diam=5):
     cv.Circle(img, (col, row), diam, (0,), -1)
     cv.Circle(img, (col, row), diam, (255,))
 
+def add_line(img, row1, col1, row2, col2, width=3):
+    """ Adds a line *in-place* on an image.
+    """
+    cv.Line(img, (col1, row1), (col2, row2), (0,), width)
 
-def get_vert_edges(img, cuts=20, stepsize = 5):
+
+def get_vert_edges(img, cuts=20, stepsize=5):
     """ Returns a list (len cuts) of lists of distinct vertical edges in
         the image.
 
@@ -62,7 +67,7 @@ def calc_distances(edgedata):
     return results
 
 
-def get_common_dists(left, right, prox=5):
+def get_common_dists(left, right, prox=4):
     """ Compares two sets of edge distances
     """
     matching = {}
@@ -73,7 +78,7 @@ def get_common_dists(left, right, prox=5):
             r_dists = right[row].keys()
             for ld in l_dists:
                 for rd in r_dists:
-                    if abs(ld - rd) < prox:
+                    if abs(ld - rd) <= prox:
                         rowmatches.append(((ld, left[row][ld]), (rd, right[row][rd])))
             if len(rowmatches) > 0:
                 matching[row] = rowmatches
