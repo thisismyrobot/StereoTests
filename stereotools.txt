@@ -1,0 +1,24 @@
+Setup
+=====
+
+    >>> import stereotools
+    >>> import cv
+
+Vertical edge extraction
+------------------------
+
+Load and prep an image
+
+    >>> img = cv.LoadImage('test_img/arch_l.png')
+    >>> img_gs = stereotools.grayscale(img)
+    >>> img_norm_gs = stereotools.normalise(img_gs)
+
+Show the image just because we can :)
+
+    >>> cv.ShowImage("pre-measure", img_norm_gs); _ = cv.WaitKey()
+
+Get the vertical edges
+
+    >>> edges = stereotools.get_vert_edges(img_norm_gs)
+    >>> edges
+    [(112, [110, 400]), (137, [56, 390, 400]), (212, [174, 357]), (262, [261, 336])]
