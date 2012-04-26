@@ -10,15 +10,19 @@ Image processing
 
 Load and prep an image
 
-    >>> img = cv.LoadImage('test_img/arch_l.png')
-    >>> img_gs = stereotools.grayscale(img)
-    >>> img_norm_gs = stereotools.normalise(img_gs)
+    >>> l_img = cv.LoadImage('test_img/arch_l.png')
+    >>> l_img = stereotools.grayscale(l_img)
+    >>> l_img = stereotools.normalise(l_img)
 
 Get the vertical edges
 
-    >>> l_edges = stereotools.get_vert_edges(img_norm_gs)
-    >>> sorted(l_edges.items())
-    [(112, [198, 398]),
+    >>> l_edges = stereotools.get_vert_edges(l_img)
+    >>> l_edges
+    [(12, []),
+     (37, []),
+     (62, []),
+     (87, []),
+     (112, [198, 398]),
      (137, [58, 233, 388, 398]),
      (162, [378, 398]),
      (187, [18, 93, 178, 268, 368]),
@@ -26,28 +30,45 @@ Get the vertical edges
      (237, [88, 173, 263, 348, 393]),
      (262, [13, 138, 338]),
      (287, [173, 263, 338]),
-     (312, [378, 433])]
+     (312, [378, 433]),
+     (337, []),
+     (362, []),
+     (387, []),
+     (412, []),
+     (437, []),
+     (462, []),
+     (487, [])]
 
 Show them
 
-    >>> for row, cols in l_edges.items():
+    >>> for row, cols in l_edges:
     ...     for col in cols:
-    ...         stereotools.add_dot(img_norm_gs, row, col)
-    >>> cv.ShowImage("left - dots", img_norm_gs);
+    ...         stereotools.add_dot(l_img, row, col)
 
-We can calculate the distances between points
+We can calculate the distances between each vertical edge and the next one
 
-    >>> l_dist = stereotools.calc_distances(l_edges)
-    >>> sorted(l_dist.items())
-    [(112, {200: (198, 398)}),
-     (137, {165: (233, 398), 10: (388, 398), 175: (58, 233), 340: (58, 398), 155: (233, 388), 330: (58, 388)}),
-     (162, {20: (378, 398)}),
-     (187, {160: (18, 178), 100: (268, 368), 75: (18, 93), 190: (178, 368), 175: (93, 268), 275: (93, 368), 85: (93, 178), 250: (18, 268), 90: (178, 268), 350: (18, 368)}),
-     (212, {130: (263, 393), 35: (358, 393), 340: (18, 358), 245: (18, 263), 375: (18, 393), 185: (173, 358), 90: (173, 263), 155: (18, 173), 220: (173, 393), 95: (263, 358)}),
-     (237, {130: (263, 393), 260: (88, 348), 45: (348, 393), 175: (173, 348), 305: (88, 393), 85: (263, 348), 90: (173, 263), 220: (173, 393)}),
-     (262, {200: (138, 338), 125: (13, 138), 325: (13, 338)}),
-     (287, {90: (173, 263), 75: (263, 338), 165: (173, 338)}),
-     (312, {55: (378, 433)})]
+    >>> l_spacing = stereotools.calc_edge_spacing(l_edges)
+    >>> l_spacing
+    [[],
+     [],
+     [],
+     [],
+     [200],
+     [175, 155, 10],
+     [20],
+     [75, 85, 90, 100],
+     [155, 90, 95, 35],
+     [85, 90, 85, 45],
+     [125, 200],
+     [90, 75],
+     [55],
+     [],
+     [],
+     [],
+     [],
+     [],
+     [],
+     []]
 
 
 Depth from comparison
@@ -55,12 +76,15 @@ Depth from comparison
 
 We get the second set of data
 
-    >>> img = cv.LoadImage('test_img/arch_r.png')
-    >>> img_gs = stereotools.grayscale(img)
-    >>> img_norm_gs = stereotools.normalise(img_gs)
-    >>> r_edges = stereotools.get_vert_edges(img_norm_gs)
-    >>> sorted(r_edges.items())
-    [(87, [248, 258]),
+    >>> r_img = cv.LoadImage('test_img/arch_r.png')
+    >>> r_img = stereotools.grayscale(r_img)
+    >>> r_img = stereotools.normalise(r_img)
+    >>> r_edges = stereotools.get_vert_edges(r_img)
+    >>> r_edges
+    [(12, []),
+     (37, []),
+     (62, []),
+     (87, [248, 258]),
      (112, [123, 218, 413, 418]),
      (137, [248, 403, 413]),
      (162, [248, 388, 413]),
@@ -68,41 +92,55 @@ We get the second set of data
      (212, [103, 188, 368, 408]),
      (237, [188, 278, 358]),
      (262, [278, 343]),
-     (287, [173, 188, 348, 393])]
+     (287, [173, 188, 348, 393]),
+     (312, []),
+     (337, []),
+     (362, []),
+     (387, []),
+     (412, []),
+     (437, []),
+     (462, []),
+     (487, [])]
 
-    >>> for row, cols in r_edges.items():
-    ...     for col in cols:
-    ...         stereotools.add_dot(img_norm_gs, row, col)
-    >>> cv.ShowImage("right - dots", img_norm_gs);
-
-    >>> r_dist = stereotools.calc_distances(r_edges)
-    >>> sorted(r_dist.items())
-    [(87, {10: (248, 258)}),
-     (112, {290: (123, 413), 195: (218, 413), 5: (413, 418), 295: (123, 418), 200: (218, 418), 95: (123, 218)}),
-     (137, {10: (403, 413), 155: (248, 403), 165: (248, 413)}),
-     (162, {25: (388, 413), 140: (248, 388), 165: (248, 413)}),
-     (187, {340: (38, 378), 245: (38, 283), 95: (283, 378)}),
-     (212, {40: (368, 408), 265: (103, 368), 305: (103, 408), 180: (188, 368), 85: (103, 188), 220: (188, 408)}),
-     (237, {80: (278, 358), 90: (188, 278), 170: (188, 358)}),
-     (262, {65: (278, 343)}),
-     (287, {160: (188, 348), 45: (348, 393), 175: (173, 348), 205: (188, 393), 15: (173, 188), 220: (173, 393)})]
-
+    >>> r_spacing = stereotools.calc_edge_spacing(r_edges)
+    >>> r_spacing
+    [[],
+     [],
+     [],
+     [10],
+     [95, 195, 5],
+     [155, 10],
+     [140, 25],
+     [245, 95],
+     [85, 180, 40],
+     [90, 80],
+     [65],
+     [15, 160, 45],
+     [],
+     [],
+     [],
+     [],
+     [],
+     [],
+     [],
+     []]
 
 And compare
 
-    >>> common = stereotools.get_common_dists(l_dist, r_dist)
-    >>> sorted(common.items())
-    [(112, [((200, (198, 398)), (200, (218, 418)))]),
-     (137, [((165, (233, 398)), (165, (248, 413))), ((10, (388, 398)), (10, (403, 413))), ((155, (233, 388)), (155, (248, 403)))]),
-     (212, [((220, (173, 393)), (220, (188, 408)))]),
-     (237, [((90, (173, 263)), (90, (188, 278)))])]
+    >>> common_spacing = stereotools.get_common_spacing(l_edges, l_spacing,
+    ...                                                 r_edges, r_spacing)
+    >>> common_spacing
+    [(137, (233, 388), (248, 403)),
+     (137, (388, 398), (403, 413)),
+     (237, (173, 263), (188, 278))]
 
 And show
 
-    >>> for row, lines in common.items():
-    ...     for (_, (_, _)), (_, (start, end)) in lines:
-    ...         stereotools.add_line(img_norm_gs, row, start, row, end)
-    >>> cv.ShowImage("right - lines", img_norm_gs);
+    >>> for y, (lx1, lx2), (rx1, rx2) in common_spacing:
+    ...     stereotools.add_line(l_img, y, lx1, y, lx2)
+    ...     stereotools.add_line(r_img, y, rx1, y, rx2)
+    >>> cv.ShowImage("left", l_img);
+    >>> cv.ShowImage("right", l_img);
 
 Wait for key
 
