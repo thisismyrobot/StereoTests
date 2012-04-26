@@ -74,8 +74,18 @@ def calc_edge_spacing(vert_edges):
     return [calc_spaces(edges) for row, edges in vert_edges]
 
 
-def get_common_spacing(left_edges, left_spacing, right_edges, right_spacing,
-                       prox=4):
+def get_index_of_near(needle, haystack, proximity):
+    """ Searches haystack (a list of numbers) for numbers within proximity to
+        needle. Returns index in haystack, or -1.
+    """
+    for index, hay in enumerate(haystack):
+        if abs(hay - needle) <= proximity:
+            return index
+    return -1
+
+
+def get_common_spacing(l_edges, l_spacing, r_edges, r_spacing,
+                       prox=5):
     """ Compares two sets of edge spacing, looking for common spacings on each
         row. "Common" is based on being within prox distance of each other.
 
@@ -85,14 +95,14 @@ def get_common_spacing(left_edges, left_spacing, right_edges, right_spacing,
          * (x1, x2) on right image
     """
     results = []
-    for row_i, left_edge in enumerate(left_edges):
-        for l_space_i, l_space in enumerate(left_spacing[row_i]):
-            if l_space not in right_spacing[row_i]:
+    for row_i, l_edge in enumerate(l_edges):
+        for l_space_i, l_space in enumerate(l_spacing[row_i]):
+            r_space_i = get_index_of_near(l_space, r_spacing[row_i], prox)
+            if r_space_i == -1:
                 continue
-            r_space_i = right_spacing[row_i].index(l_space)
-            results.append((left_edge[0],
-                            (left_edge[1][l_space_i],
-                             left_edge[1][l_space_i + 1]),
-                            (right_edges[row_i][1][r_space_i],
-                             right_edges[row_i][1][r_space_i + 1])))
+            results.append((l_edge[0],
+                            (l_edge[1][l_space_i],
+                             l_edge[1][l_space_i + 1]),
+                            (r_edges[row_i][1][r_space_i],
+                             r_edges[row_i][1][r_space_i + 1])))
     return results
