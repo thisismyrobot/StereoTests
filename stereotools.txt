@@ -5,8 +5,8 @@ Setup
     >>> import cv
 
 
-Image processing
-----------------
+Finding edges and their spacing
+-------------------------------
 
 Load and prep an image
 
@@ -39,7 +39,7 @@ Get the vertical edges
      (462, []),
      (487, [])]
 
-Show them
+Draw them
 
     >>> for row, cols in l_edges:
     ...     for col in cols:
@@ -71,8 +71,8 @@ We can calculate the distances between each vertical edge and the next one
      []]
 
 
-Depth from comparison
----------------------
+Finding common edges by common spacing
+--------------------------------------
 
 We get the second set of data
 
@@ -101,6 +101,10 @@ We get the second set of data
      (437, []),
      (462, []),
      (487, [])]
+
+    >>> for row, cols in l_edges:
+    ...     for col in cols:
+    ...         stereotools.add_dot(l_img, row, col)
 
     >>> r_spacing = stereotools.calc_edge_spacing(r_edges)
     >>> r_spacing
@@ -142,7 +146,40 @@ And compare
      (237, (173, 263), (188, 278)),
      (237, (263, 348), (188, 278))]
 
-And show
+Determining depth from spacing data
+-----------------------------------
+
+    >>> depths = stereotools.get_depths(common_spacing)
+    >>> depths
+    [17,
+     15,
+     15,
+     12,
+     107,
+     12,
+     73,
+     13,
+     103,
+     15,
+     72]
+
+Some of the spacings are huge, suggesting an error. We can filter the spacing
+data with the depth data.
+
+    >>> common_spacing = stereotools.filter_spacing_by_depth(common_spacing, depths, 20)
+    >>> common_spacing
+    [(112, (198, 398), (218, 413)),
+     (137, (233, 388), (248, 403)),
+     (137, (388, 398), (403, 413)),
+     (162, (378, 398), (388, 413)),
+     (187, (268, 368), (283, 378)),
+     (212, (358, 393), (368, 408)),
+     (237, (173, 263), (188, 278))]
+
+Tidy-up
+-------
+
+Show results
 
     >>> for y, (lx1, lx2), (rx1, rx2) in common_spacing:
     ...     stereotools.add_line(l_img, y, lx1, y, lx2)

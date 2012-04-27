@@ -83,8 +83,7 @@ def get_index_of_near(needle, haystack, proximity):
     return -1
 
 
-def get_common_spacing(l_edges, l_spacing, r_edges, r_spacing,
-                       prox=5):
+def get_common_spacing(l_edges, l_spacing, r_edges, r_spacing, prox=5):
     """ Compares two sets of edge spacing, looking for common spacings on each
         row. "Common" is based on being within prox distance of each other.
 
@@ -105,3 +104,21 @@ def get_common_spacing(l_edges, l_spacing, r_edges, r_spacing,
                             (r_edges[row_i][1][r_space_i],
                              r_edges[row_i][1][r_space_i + 1])))
     return results
+
+
+def get_depths(common_spacing_data):
+    """ Using spacing data from get_common_spacing(), show depth of each
+        spacing. Is purely linear, not based on lense etc.
+    """
+    return [abs(((lx1 + lx2) / 2) - ((rx1 + rx2) / 2))
+            for y, (lx1, lx2), (rx1, rx2)
+            in common_spacing_data]
+
+
+def filter_spacing_by_depth(spacing, depths, threshold):
+    """ Filters get_common_spacing() data by get_depths() data.
+    """
+    return [spacing
+            for i, spacing
+            in enumerate(spacing)
+            if depths[i] < threshold]
