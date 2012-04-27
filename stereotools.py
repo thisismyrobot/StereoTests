@@ -32,8 +32,7 @@ def add_line(img, row1, col1, row2, col2, width=2):
 
 
 def get_vert_edges(img, cuts=20, stepsize=5):
-    """ Returns a list (len cuts) of lists of distinct vertical edges in
-        the image.
+    """ Finds vertical edges in an image.
 
         img is a cv image from cv.LoadImage
 

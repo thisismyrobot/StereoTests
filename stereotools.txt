@@ -10,7 +10,7 @@ Image processing
 
 Load and prep an image
 
-    >>> l_img = cv.LoadImage('test_img/arch_l.png')
+    >>> l_img = cv.LoadImage('input_img/arch_l.png')
     >>> l_img = stereotools.grayscale(l_img)
     >>> l_img = stereotools.normalise(l_img)
 
@@ -76,7 +76,7 @@ Depth from comparison
 
 We get the second set of data
 
-    >>> r_img = cv.LoadImage('test_img/arch_r.png')
+    >>> r_img = cv.LoadImage('input_img/arch_r.png')
     >>> r_img = stereotools.grayscale(r_img)
     >>> r_img = stereotools.normalise(r_img)
     >>> r_edges = stereotools.get_vert_edges(r_img)
@@ -149,6 +149,11 @@ And show
     ...     stereotools.add_line(r_img, y, rx1, y, rx2)
     >>> cv.ShowImage("left", l_img);
     >>> cv.ShowImage("right", l_img);
+
+Save for interests-sake
+
+    >>> cv.SaveImage("output_img/arch_l.png", l_img)
+    >>> cv.SaveImage("output_img/arch_r.png", r_img)
 
 Wait for key
 
