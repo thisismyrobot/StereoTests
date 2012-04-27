@@ -156,7 +156,8 @@ Determining depth from spacing data
 Some of the spacings are huge, suggesting an error. We can filter the spacing
 data with the depth data.
 
-    >>> common_spacing = stereotools.filter_spacing_by_depth(common_spacing, depths, 20)
+    >>> common_spacing = stereotools.filter_spacing_by_depth(common_spacing,
+    ...                                                      depths, 20)
     >>> common_spacing
     [(112, (198, 398), (218, 413)),
      (137, (233, 388), (248, 403)),
@@ -192,8 +193,10 @@ Show results overlaid on original images
     ...     stereotools.add_line(r_img, y - 10, ((rx1 + rx2) / 2) + 10, y,
     ...                          (rx1 + rx2) / 2, (0, 255, 0), 1)
     ...
-    ...     stereotools.add_text(l_img, ((lx1 + lx2) / 2) + 10, y - 10, str(depths[i]))
-    ...     stereotools.add_text(r_img, ((rx1 + rx2) / 2) + 10, y - 10, str(depths[i]))
+    ...     stereotools.add_text(l_img, ((lx1 + lx2) / 2) + 10, y - 10,
+    ...                          str(depths[i]))
+    ...     stereotools.add_text(r_img, ((rx1 + rx2) / 2) + 10, y - 10,
+    ...                          str(depths[i]))
 
     >>> cv.ShowImage("left", l_img);
     >>> cv.ShowImage("right", r_img);
