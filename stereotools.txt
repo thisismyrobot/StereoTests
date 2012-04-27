@@ -102,9 +102,9 @@ We get the second set of data
      (462, []),
      (487, [])]
 
-    >>> for row, cols in l_edges:
+    >>> for row, cols in r_edges:
     ...     for col in cols:
-    ...         stereotools.add_dot(l_img, row, col)
+    ...         stereotools.add_dot(r_img, row, col)
 
     >>> r_spacing = stereotools.calc_edge_spacing(r_edges)
     >>> r_spacing
