@@ -17,21 +17,26 @@ def normalise(img):
     return normalised
 
 
-def add_dot(img, row, col, diam=5):
-    """ Adds a black dot *in-place* on an image a row, col.
+def add_dot(img, row, col, colour=(0, 0, 0), diam=5):
+    """ Adds a filled circle *in-place* on an image a row, col.
     """
-    cv.Circle(img, (col, row), diam, (0,), -1)
-    cv.Circle(img, (col, row), diam, (255,))
+    cv.Circle(img, (col, row), diam, colour, -1)
 
 
-def add_line(img, row1, col1, row2, col2, width=2):
+def add_line(img, row1, col1, row2, col2, colour=(0, 0, 0),  width=2):
     """ Adds a line *in-place* on an image.
     """
-    cv.Line(img, (col1, row1), (col2, row2), (255,), width + 1)
-    cv.Line(img, (col1, row1), (col2, row2), (0,), width)
+    cv.Line(img, (col1, row1), (col2, row2), colour, width)
 
 
-def get_vert_edges(img, cuts=20, stepsize=5):
+def add_text(img, x, y, string, colour=(255, 255, 255), size=0.5):
+    """ Adds text in-place.
+    """
+    font = cv.InitFont(cv.CV_FONT_HERSHEY_SIMPLEX, size, size)
+    cv.PutText(img, string, (x, y), font, colour)
+
+
+def get_vert_edges(img, cuts=20, stepsize=5, threshold=100):
     """ Finds vertical edges in an image.
 
         img is a cv image from cv.LoadImage
@@ -48,7 +53,7 @@ def get_vert_edges(img, cuts=20, stepsize=5):
         lastval = None
         for col in range(0, img.width, stepsize):
             val = img[row, col]
-            if lastval is not None and abs(val - lastval) > 100:
+            if lastval is not None and abs(val - lastval) > threshold:
                 rowedges.append(col - (stepsize / 2))
             lastval = val
         edges.append((row, rowedges))

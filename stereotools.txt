@@ -39,12 +39,6 @@ Get the vertical edges
      (462, []),
      (487, [])]
 
-Draw them
-
-    >>> for row, cols in l_edges:
-    ...     for col in cols:
-    ...         stereotools.add_dot(l_img, row, col)
-
 We can calculate the distances between each vertical edge and the next one
 
     >>> l_spacing = stereotools.calc_edge_spacing(l_edges)
@@ -101,10 +95,6 @@ We get the second set of data
      (437, []),
      (462, []),
      (487, [])]
-
-    >>> for row, cols in r_edges:
-    ...     for col in cols:
-    ...         stereotools.add_dot(r_img, row, col)
 
     >>> r_spacing = stereotools.calc_edge_spacing(r_edges)
     >>> r_spacing
@@ -179,13 +169,34 @@ data with the depth data.
 Tidy-up
 -------
 
-Show results
+Show results overlaid on original images
 
-    >>> for y, (lx1, lx2), (rx1, rx2) in common_spacing:
-    ...     stereotools.add_line(l_img, y, lx1, y, lx2)
-    ...     stereotools.add_line(r_img, y, rx1, y, rx2)
+    >>> l_img = cv.LoadImage('input_img/arch_l.png')
+    >>> r_img = cv.LoadImage('input_img/arch_r.png')
+
+    >>> for row, cols in l_edges:
+    ...     for col in cols:
+    ...         stereotools.add_dot(l_img, row, col, (0, 0, 255), 3)
+
+    >>> for row, cols in r_edges:
+    ...     for col in cols:
+    ...         stereotools.add_dot(r_img, row, col, (0, 0, 255), 3)
+
+    >>> depths = stereotools.get_depths(common_spacing)
+    >>> for i, (y, (lx1, lx2), (rx1, rx2)) in enumerate(common_spacing):
+    ...     stereotools.add_line(l_img, y, lx1, y, lx2, (0, 255, 0), 1)
+    ...     stereotools.add_line(r_img, y, rx1, y, rx2, (0, 255, 0), 1)
+    ...
+    ...     stereotools.add_line(l_img, y - 10, ((lx1 + lx2) / 2) + 10, y,
+    ...                          (lx1 + lx2) / 2, (0, 255, 0), 1)
+    ...     stereotools.add_line(r_img, y - 10, ((rx1 + rx2) / 2) + 10, y,
+    ...                          (rx1 + rx2) / 2, (0, 255, 0), 1)
+    ...
+    ...     stereotools.add_text(l_img, ((lx1 + lx2) / 2) + 10, y - 10, str(depths[i]))
+    ...     stereotools.add_text(r_img, ((rx1 + rx2) / 2) + 10, y - 10, str(depths[i]))
+
     >>> cv.ShowImage("left", l_img);
-    >>> cv.ShowImage("right", l_img);
+    >>> cv.ShowImage("right", r_img);
 
 Save for interests-sake
 
